@@ -68,6 +68,11 @@ class EDApplicationMXv1Characterisation(EDApplication):
     COMMENTS_LABEL = "--comments"
     SHORTCOMMENTS_LABEL = "--shortComments"
     TRANSMISSION_LABEL = "--transmission"
+    DOSELIMIT = "--doseLimit"
+    AIMED_COMPLETENESS = "--aimedCompleteness"
+    AIMED_RESOLUTION = "--aimedResolution"
+    AIMED_MULTIPLICITY = "--aimedMultiplicityW"
+ 
 
 
     """
@@ -101,6 +106,10 @@ class EDApplicationMXv1Characterisation(EDApplication):
         self.__fBeamPosX = None
         self.__fBeamPosY = None
         self.__strStrategyOption = None
+        self.__fDoseLimit = None
+        self.__fAimedResolution = None
+        self.__fAimedCompleteness = None
+        self.__fAimedMultiplicity = None
         self.__bProcess = True
         self.__iDataCollectionId = None
         self.__xsDataInputCharacterisation = _xsDataInputCharacterisation
@@ -166,6 +175,14 @@ class EDApplicationMXv1Characterisation(EDApplication):
             xsDataDiffractionPlan.setAnomalousData(XSDataBoolean(self.__bAnomalousData))
         if (not self.__strStrategyOption is None):
             xsDataDiffractionPlan.setStrategyOption(XSDataString(self.__strStrategyOption))
+        if (not self.__fDoseLimit is None):
+            xsDataDiffractionPlan.setDoseLimit(XSDataDouble(self.__fDoseLimit))
+        if (not self.__fAimedCompleteness is None):
+            xsDataDiffractionPlan.setAimedCompleteness(XSDataDouble(self.__fAimedCompleteness))
+        if (not self.__fAimedMultiplicity is None):
+            xsDataDiffractionPlan.setAimedMultiplicity(XSDataDouble(self.__fAimedMultiplicity))
+        if (not self.__fAimedResolution is None):
+            xsDataDiffractionPlan.setAimedResolution(XSDataDouble(self.__fAimedResolution))
         if (not self.__strComplexity is None):
             xsDataDiffractionPlan.setComplexity(XSDataString(self.__strComplexity))
         _edPlugin.setDataInput(xsDataDiffractionPlan, "diffractionPlan")
@@ -286,6 +303,22 @@ class EDApplicationMXv1Characterisation(EDApplication):
                 if(strTransmission is not None):
                     self.__fTransmission = float(strTransmission)
                     EDVerbose.screen("Transmission                                 : %.1f [%%]" % (self.__fTransmission))
+                strDoseLimit = self.getCommandLineArgument(EDApplicationMXv1Characterisation.DOSELIMIT)
+                if(strDoseLimit is not None):
+                    self.__fDoseLimit = 1.e6*float(strDoseLimit)
+                    EDVerbose.screen("Dose Limit (best -DMAX *1.e-6)               : %7.3f [MGy]" % (self.__fDoseLimit*1.e-6))
+                strAimedResolution = self.getCommandLineArgument(EDApplicationMXv1Characterisation.AIMED_RESOLUTION)
+                if(strAimedResolution is not None):
+                    self.__fAimedResolution = float(strAimedResolution)
+                    EDVerbose.screen("Aimed Resolution (BEST -r)                   : %7.3f [A]" % (self.__fAimedResolution))
+                strAimedCompleteness = self.getCommandLineArgument(EDApplicationMXv1Characterisation.AIMED_COMPLETENESS)
+                if(strAimedCompleteness is not None):
+                    self.__fAimedCompleteness = float(strAimedCompleteness)
+                    EDVerbose.screen("Aimed Resolution (BEST -C) as decimal        : %7.3f []" % (self.__fAimedCompleteness))
+                strAimedMultiplicity = self.getCommandLineArgument(EDApplicationMXv1Characterisation.AIMED_MULTIPLICITY)
+                if(strAimedMultiplicity is not None):
+                    self.__fAimedMultiplicity = float(AimedMultiplicity)
+                    EDVerbose.screen("Aimed Multiplicity (BEST -R)                 : %7.3f []" % (self.__fAimedMultiplicity))
                 bCommandLineIsOk = True
             elif (not self.__strGeneratedTemplateFile is None):
                 bCommandLineIsOk = True
